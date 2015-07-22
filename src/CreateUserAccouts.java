@@ -101,7 +101,7 @@ public class CreateUserAccouts
             out = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(outputFile)), "UTF-8"));
 
             Iterator<Student> iter = studentsSet.iterator();
-            while(it.hasNext())
+            while(iter.hasNext())
             {
                 Student student = iter.next();
                 out.println("Family Name: " + student.familyName);
@@ -109,7 +109,7 @@ public class CreateUserAccouts
                 out.println("Student number: " + student.studentNumber);
                 out.println("Username: " + student.userName);
                 out.println("Password: " + student.password);
-                if(it.hasNext())
+                if(iter.hasNext())
                 {
                     //empty row
                     out.println("");
@@ -138,51 +138,52 @@ public class CreateUserAccouts
 
     }
 
-}
-
-class Student implements Comparable<Student>
-{
-    String familyName;
-    String givenNames;
-    String studentNumber;
-    String [] birthday;
-    String userName;
-    String password;
-
-    String initialsPart;
-    String familyPart;
-
-    public void calculatePassword()
+    static class Student implements Comparable<Student>
     {
-        String month = birthday[1].length() > 3 ? birthday[1].substring(0, 3) : birthday[1];
-        password =  month + birthday[0] + studentNumber.substring(4);
-    }
+        String familyName;
+        String givenNames;
+        String studentNumber;
+        String [] birthday;
+        String userName;
+        String password;
 
-    public void calculateUsername()
-    {
-        familyPart = familyName.replace(" ", "").toLowerCase();
-        String [] initialsArray = givenNames.toLowerCase().split(" ");
-        StringBuffer initials = new StringBuffer();
-        for (String st : initialsArray)
+        String initialsPart;
+        String familyPart;
+
+        public void calculatePassword()
         {
-            initials.append(st.charAt(0));
+            String month = birthday[1].length() > 3 ? birthday[1].substring(0, 3) : birthday[1];
+            password =  month + birthday[0] + studentNumber.substring(4);
         }
-        initialsPart = initials.toString();
-        userName = initialsPart + familyPart;
+
+        public void calculateUsername()
+        {
+            familyPart = familyName.replace(" ", "").toLowerCase();
+            String [] initialsArray = givenNames.toLowerCase().split(" ");
+            StringBuffer initials = new StringBuffer();
+            for (String st : initialsArray)
+            {
+                initials.append(st.charAt(0));
+            }
+            initialsPart = initials.toString();
+            userName = initialsPart + familyPart;
+        }
+
+        public void renameUserNameWithNumber(int num)
+        {
+            userName = initialsPart + num + familyPart;
+        }
+
+        @Override
+        public int compareTo(Student o)
+        {
+            int i = familyName.compareTo(o.familyName);
+            if (i != 0) return i;
+
+            i = givenNames.compareTo(o.givenNames);
+            return i;
+        }
     }
 
-    public void renameUserNameWithNumber(int num)
-    {
-        userName = initialsPart + num + familyPart;
-    }
-
-    @Override
-    public int compareTo(Student o)
-    {
-        int i = familyName.compareTo(o.familyName);
-        if (i != 0) return i;
-
-        i = givenNames.compareTo(o.givenNames);
-        return i;
-    }
 }
+
