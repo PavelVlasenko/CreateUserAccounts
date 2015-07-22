@@ -9,13 +9,21 @@ public class CreateUserAccouts
 
     public static void main(String[] args)
     {
-        //read file
-        File file = new File("/home/pvlasenko/Documents/Upwork/test.txt");
+        //read inputFile
+        if(args.length < 2)
+        {
+            System.out.println("Missing input file and output file");
+            System.exit(0);
+        }
+
+        File inputFile = new File(args[0]);
+
         BufferedReader br = null;
 
         try
         {
-            br = new BufferedReader(new FileReader(file));
+            System.out.println("...Start parsing input file");
+            br = new BufferedReader(new FileReader(inputFile));
 
             String str;
             Student student = new Student();
@@ -43,6 +51,8 @@ public class CreateUserAccouts
                 }
                 rowCount++;
             }
+
+            System.out.println(studentsSet.size() + " Students objects was created");
         }
         catch(FileNotFoundException e)
         {
@@ -78,7 +88,54 @@ public class CreateUserAccouts
                 repeatCount = 0;
             }
         }
-        System.out.println(studentsSet);
+
+        System.out.println("...Start write to output file");
+        File outputFile = new File(args[1]);
+        PrintWriter out = null;
+        try
+        {
+            if(!outputFile.exists())
+            {
+                outputFile.createNewFile();
+            }
+            out = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(outputFile)), "UTF-8"));
+
+            Iterator<Student> iter = studentsSet.iterator();
+            while(it.hasNext())
+            {
+                Student student = iter.next();
+                out.println("Family Name: " + student.familyName);
+                out.println("Given names: " + student.givenNames);
+                out.println("Student number: " + student.studentNumber);
+                out.println("Username: " + student.userName);
+                out.println("Password: " + student.password);
+                if(it.hasNext())
+                {
+                    //empty row
+                    out.println("");
+                }
+            }
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            if(out != null) {
+                out.flush();
+                out.close();
+            }
+        }
+
     }
 
 }
